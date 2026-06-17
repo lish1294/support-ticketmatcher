@@ -1,2 +1,0 @@
-# support-ticketmatcher
-Support Tool
