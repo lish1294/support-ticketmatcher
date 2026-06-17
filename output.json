@@ -1,0 +1,134 @@
+[
+  {
+    "id": 1,
+    "category": "Authentication",
+    "product_area": "Login",
+    "customer_issue": "Users cannot log into the Salesforce application after a recent configuration change.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "Login configuration, user access, or authentication settings issue",
+    "expected_troubleshooting": "Check user status, login history, authentication settings, and recent changes.",
+    "search_terms": "authentication access"
+  },
+  {
+    "id": 2,
+    "category": "Authentication",
+    "product_area": "OAuth",
+    "customer_issue": "An external integration receives invalid_grant errors when requesting new access tokens.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "OAuth token expiration, revoked refresh token, or connected app configuration issue",
+    "expected_troubleshooting": "Validate connected app settings, refresh token status, scopes, and reauthorize integration.",
+    "search_terms": "external integration invalid_grant errors requesting new access tokens"
+  },
+  {
+    "id": 3,
+    "category": "API",
+    "product_area": "REST API",
+    "customer_issue": "A third-party application calling Salesforce REST API receives 401 unauthorized responses.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "Invalid credentials, expired token, or incorrect API permissions",
+    "expected_troubleshooting": "Verify authentication headers, OAuth flow, user permissions, and API access.",
+    "search_terms": "api integration oauth authentication 401 unauthorized token third-party"
+  },
+  {
+    "id": 4,
+    "category": "Lightning",
+    "product_area": "Lightning Experience",
+    "customer_issue": "A user cannot see a Lightning component that other users can access.",
+    "environment": "Production",
+    "severity": "Medium",
+    "expected_root_cause": "Lightning page assignment, permission, or component visibility rules",
+    "expected_troubleshooting": "Check Lightning page activation, profiles, permission sets, and visibility filters.",
+    "search_terms": "user cannot see Lightning component other users can access"
+  },
+  {
+    "id": 5,
+    "category": "Development",
+    "product_area": "Apex",
+    "customer_issue": "A custom Apex trigger fails during record creation with an unexpected exception.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "Apex logic error, governor limit, or data validation failure",
+    "expected_troubleshooting": "Review debug logs, Apex exceptions, trigger logic, and related automation.",
+    "search_terms": "trigger error fail"
+  },
+  {
+    "id": 6,
+    "category": "Permissions",
+    "product_area": "Permission Sets",
+    "customer_issue": "A user cannot edit records they should have access to.",
+    "environment": "Production",
+    "severity": "Medium",
+    "expected_root_cause": "Missing permission set, profile permissions, sharing rules, or record access issue",
+    "expected_troubleshooting": "Review object permissions, field access, sharing rules, and role hierarchy.",
+    "search_terms": "Insufficient Privileges\nYou do not have sufficient privileges to access this record."
+  },
+  {
+    "id": 7,
+    "category": "Automation",
+    "product_area": "Flow",
+    "customer_issue": "A Salesforce Flow fails when a user updates a record.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "Flow fault path, missing permissions, invalid data, or automation conflict",
+    "expected_troubleshooting": "Check Flow error details, debug runs, user permissions, and related automation.",
+    "search_terms": "flow failed to execute unhandled fault has occurred in this flow"
+  },
+  {
+    "id": 8,
+    "category": "Integration",
+    "product_area": "Integration",
+    "customer_issue": "Customer data is no longer syncing between Salesforce and an external system.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "Integration authentication failure, API issue, or mapping problem",
+    "expected_troubleshooting": "Check integration logs, API status, credentials, field mappings, and recent changes.",
+    "search_terms": "integration, sync failure, data not syncing, external system, api failure, rest api, middleware, webhook, batch job, connector"
+  },
+  {
+    "id": 9,
+    "category": "Authentication",
+    "product_area": "SSO",
+    "customer_issue": "Users receive SAML authentication errors after an identity provider certificate rotation.",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "SAML metadata mismatch or expired certificate",
+    "expected_troubleshooting": "Validate identity provider metadata, Salesforce SSO settings, certificates, and SAML responses.",
+    "search_terms": "SAML Assertion Signature Invalid"
+  },
+  {
+    "id": 10,
+    "category": "SSO",
+    "product_area": "SSO",
+    "customer_issue": "Users cannot login after certificate update",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "SAML certificate issue",
+    "expected_troubleshooting": "Check SAML certificate",
+    "search_terms": "SAML Assertion Signature Invalid Unable to validate SAML assertion "
+  },
+  {
+    "id": 11,
+    "category": "API",
+    "product_area": "REST API",
+    "customer_issue": "Integration returns 401 errors",
+    "environment": "Production",
+    "severity": "High",
+    "expected_root_cause": "OAuth authentication issue",
+    "expected_troubleshooting": "Validate OAuth token",
+    "search_terms": "api integration oauth authentication 401 unauthorized  token INVALID_ASSERTION_CONSUMER_SERVICE"
+  },
+  {
+    "id": 12,
+    "category": "Permissions",
+    "product_area": "Permissions",
+    "customer_issue": "User cannot see records",
+    "environment": "Production",
+    "severity": "Medium",
+    "expected_root_cause": "Record access or sharing configuration issue",
+    "expected_troubleshooting": "Review sharing rules",
+    "search_terms": "INSUFFICIENT_ACCESS_OR_READONLY Insufficient Privileges do not have sufficient privileges to access this record"
+  }
+]
