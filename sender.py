@@ -135,14 +135,14 @@ def _is_numeric_only_search(user_input):
     return bool(re.fullmatch(r"[+-]?\d+(?:\.\d+)?", value))
 
 
-def find_matching_rows(excel_file_path, criteria, sheet_name=0, match_all=True):
+def find_matching_rows(excel_file_path, criteria, sheet_name=None, match_all=True):
     """
     Read the Excel file and return rows that match the given criteria.
 
     Args:
       excel_file_path: path to excel file
       criteria: dict of column->value to match (case-insensitive column matching)
-      sheet_name: sheet name or index
+      sheet_name: sheet name, index, or None to search all sheets
       match_all: if True, require all criteria to match (AND); if False, match any (OR)
 
     Returns a list of dicts (one per matching row) with NaN converted to None.
@@ -150,62 +150,70 @@ def find_matching_rows(excel_file_path, criteria, sheet_name=0, match_all=True):
     if not Path(excel_file_path).exists():
         raise FileNotFoundError(f"Excel file '{excel_file_path}' not found")
 
-    df = pd.read_excel(excel_file_path, sheet_name=sheet_name)
-
-    if df.empty:
-        return []
-
-    # Build a mapping of lowercase column names to actual column names
-    col_map = {c.lower(): c for c in df.columns}
-
-    masks = []
-    for key, val in criteria.items():
-        if key == "query":
-            # free-text search across all columns
-            q = "" if val is None else str(val).strip().lower()
-            if q == "":
-                continue
-            col_masks = []
-            for c in df.columns:
-                col_masks.append(df[c].astype(str).fillna("").str.lower().str.contains(q, na=False))
-            masks.append(pd.concat(col_masks, axis=1).any(axis=1))
-            continue
-
-        col = col_map.get(key.lower())
-        if col is None:
-            # no such column, create a mask that's all False
-            masks.append(pd.Series([False] * len(df)))
-            continue
-
-        if val is None:
-            masks.append(df[col].isna() | (df[col].astype(str).str.strip() == ""))
-        else:
-            # match stringified values case-insensitively
-            masks.append(df[col].astype(str).fillna("").str.strip().str.lower() == str(val).lower())
-
-    if not masks:
-        return []
-
-    if match_all:
-        combined = masks[0]
-        for m in masks[1:]:
-            combined = combined & m
+    sheets = pd.read_excel(excel_file_path, sheet_name=sheet_name)
+    if isinstance(sheets, dict):
+        sheet_items = sheets.items()
     else:
-        combined = masks[0]
-        for m in masks[1:]:
-            combined = combined | m
-
-    matched = df[combined]
+        sheet_name_for_single = sheet_name if sheet_name is not None else "Sheet"
+        sheet_items = [(sheet_name_for_single, sheets)]
 
     results = []
-    for _, row in matched.iterrows():
-        row_dict = {k: (None if pd.isna(v) else v) for k, v in row.to_dict().items()}
-        results.append(row_dict)
+    for sheet_title, df in sheet_items:
+        if df.empty:
+            continue
+
+        # Build a mapping of lowercase column names to actual column names
+        col_map = {c.lower(): c for c in df.columns}
+
+        masks = []
+        for key, val in criteria.items():
+            if key == "query":
+                # free-text search across all columns
+                q = "" if val is None else str(val).strip().lower()
+                if q == "":
+                    continue
+                col_masks = []
+                for c in df.columns:
+                    col_masks.append(df[c].astype(str).fillna("").str.lower().str.contains(q, na=False))
+                masks.append(pd.concat(col_masks, axis=1).any(axis=1))
+                continue
+
+            col = col_map.get(key.lower())
+            if col is None:
+                # no such column, create a mask that's all False
+                masks.append(pd.Series([False] * len(df)))
+                continue
+
+            if val is None:
+                masks.append(df[col].isna() | (df[col].astype(str).str.strip() == ""))
+            else:
+                # match stringified values case-insensitively
+                masks.append(df[col].astype(str).fillna("").str.strip().str.lower() == str(val).lower())
+
+        if not masks:
+            continue
+
+        if match_all:
+            combined = masks[0]
+            for m in masks[1:]:
+                combined = combined & m
+        else:
+            combined = masks[0]
+            for m in masks[1:]:
+                combined = combined | m
+
+        matched = df[combined]
+
+        for _, row in matched.iterrows():
+            row_dict = {k: (None if pd.isna(v) else v) for k, v in row.to_dict().items()}
+            if sheet_name is None:
+                row_dict["_sheet_name"] = sheet_title
+            results.append(row_dict)
 
     return results
 
 
-def check_excel_and_match(excel_file_path, user_input, sheet_name=0, match_all=True):
+def check_excel_and_match(excel_file_path, user_input, sheet_name=None, match_all=True):
     """
     Convenience function: parse `user_input`, then search the Excel and return matches as JSON strings.
     """
